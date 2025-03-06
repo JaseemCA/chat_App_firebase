@@ -15,8 +15,7 @@ class loginPage extends StatelessWidget {
   void login(BuildContext context) async {
     final authservice = AuthService();
     try {
-      await authservice.signInwithEmailAndPassword(
-          _emailcontroller.text, _passwordcontroller.text);
+      await authservice.signIn(_emailcontroller.text, _passwordcontroller.text);
     } catch (e) {
       showDialog(
           context: context,
@@ -24,7 +23,7 @@ class loginPage extends StatelessWidget {
                 title: Text(e.toString()),
               ));
     }
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
