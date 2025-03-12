@@ -1,4 +1,3 @@
-// }
 import 'package:chat_app/pages/chatpage.dart';
 import 'package:chat_app/services/auth/auth_service.dart';
 import 'package:chat_app/services/chat/chat_services.dart';
@@ -9,9 +8,10 @@ import 'package:flutter/material.dart';
 class Homepage extends StatelessWidget {
   Homepage({super.key});
 
-  void logout() {
+  void logout(BuildContext context) {
     final auth = AuthService();
     auth.signOut();
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 
   final ChatService _chatService = ChatService();
@@ -23,11 +23,12 @@ class Homepage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Chat App"),
+        title: const Text("Chat App", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.blue,
         actions: [
           IconButton(
-            onPressed: logout,
-            icon: const Icon(Icons.logout),
+            onPressed: () => logout(context),
+            icon: const Icon(Icons.logout, color: Colors.black),
           )
         ],
       ),
@@ -40,11 +41,10 @@ class Homepage extends StatelessWidget {
     return StreamBuilder(
       stream: _chatService.getUsersStream(),
       builder: (context, snapshot) {
-        print("Snapshot Connection State: ${snapshot.connectionState}");
-        print("Snapshot Data: ${snapshot.data}");
-
         if (snapshot.hasError) {
-          return const Center(child: Text("Error loading users"));
+          return const Center(
+              child: Text("Error loading users",
+                  style: TextStyle(color: Colors.black)));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -52,7 +52,9 @@ class Homepage extends StatelessWidget {
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No users found."));
+          return const Center(
+              child: Text("No users found.",
+                  style: TextStyle(color: Colors.black)));
         }
 
         return ListView(
@@ -75,6 +77,7 @@ class Homepage extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => ChatPage(
                 recieverEmail: userdata["email"],
+                recieverId: userdata["uid"],
               ),
             ),
           );
